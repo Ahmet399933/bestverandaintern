@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"/>
+<title>Veranda Zaagplan Generator</title>
+<style>
+  :root {
+    --primary: #2c3e50;
+    --primary-light: #3d566e;
+    --primary-dark: #1a2634;
+    --secondary: #e74c3c;
+    --secondary-light: #f18c8c;
+    --accent: #3498db;
+    --accent-light: #5dade2;
+    --success: #27ae60;
+    --success-light: #58d68d;
+    --warning: #f39c12;
+    --warning-light: #f8c471;
+    --info: #17a2b8;
+    --text: #333;
+    --text-light: #7f8c8d;
+    --light-bg: #f5f7fa;
+    --white: #ffffff;
+    --border: #d6dbdf;
+    --shadow: 0 4px 10px rgba(0,0,0,0.1);
+    --radius: 8px;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--light-bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+    margin: 0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  
+  h1, h2, h3 {
+    color: var(--primary);
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    font-size: 32px;
+    text-align: center;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  h1:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 3px;
+  }
+  
+  h2 {
+    font-size: 24px;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 8px;
+  }
+  
+  h3 {
+    font-size: 20px;
+    color: var(--primary-light);
+  }
+  
+  .input-section {
+    background: var(--white);
+    padding: 25px;
+    border-radius: var(--radius);
+    margin-bottom: 30px;
+    border-left: 5px solid var(--accent);
+    box-shadow: var(--shadow);
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--primary-light);
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 16px;
+    transition: all 0.3s;
+    background: var(--light-bg);
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  }
+  
+  button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 16px;
+  }
+  
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+  }
+  
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background: var(--success-light);
+    transform: translateY(-2px);
+  }
+  
+  .btn-danger {
+    background: var(--secondary);
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background: var(--secondary-light);
+    transform: translateY(-2px);
+  }
+  
+  .btn-export {
+    background: var(--accent);
+    color: white;
+  }
+  
+  .btn-export:hover {
+    background: var(--accent-light);
+    transform: translateY(-2px);
+  }
+  
+  .btn-warning {
+    background: var(--warning);
+    color: white;
+  }
+  
+  .btn-warning:hover {
+    background: var(--warning-light);
+    transform: translateY(-2px);
+  }
+  
+  .veranda-list {
+    margin: 30px 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  
+  .veranda-item {
+    background: var(--white);
+    padding: 18px 25px;
+    margin-bottom: 10px;
+    border-radius: var(--radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--accent);
+    transition: all 0.3s;
+  }
+  
+  .veranda-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+  
+  .veranda-info {
+    flex: 1;
+  }
+  
+  .veranda-info strong {
+    font-size: 18px;
+    color: var(--primary);
+  }
+  
+  .veranda-details {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+    font-size: 14px;
+    color: var(--text-light);
+  }
+  
+  .veranda-details span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .veranda-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .veranda-actions button {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-light);
+    background: var(--light-bg);
+    border-radius: var(--radius);
+    border: 2px dashed var(--border);
+  }
+  
+  .empty-state p {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .results-section {
+    display: none;
+    margin-top: 40px;
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .material-group {
+    margin-bottom: 40px;
+    page-break-inside: avoid;
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  
+  .material-header {
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 15px 25px;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  
+  .cutting-plan {
+    padding: 20px;
+  }
+  
+  .cut-combination {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--light-bg);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--accent);
+  }
+  
+  .cut-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .cut-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
+  
+  .cut-item {
+    background: var(--white);
+    padding: 15px;
+    border-radius: var(--radius);
+    font-size: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+  }
+  
+  .cut-item strong {
+    color: var(--primary);
+    font-size: 16px;
+    display: block;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .waste-display {
+    color: var(--secondary);
+    font-weight: bold;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+  
+  .total-waste {
+    background: linear-gradient(90deg, #fee2e2, #ffebee);
+    padding: 20px;
+    border-radius: var(--radius);
+    text-align: center;
+    font-weight: bold;
+    margin-top: 30px;
+    font-size: 18px;
+    color: var(--secondary);
+    border: 1px solid var(--secondary-light);
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--light-bg);
+    border-radius: var(--radius);
+  }
+  
+  .status-count {
+    font-weight: 600;
+    color: var(--primary);
+  }
+  
+  .color-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    margin-left: 8px;
+  }
+  
+  .RAL7016 { background: #383e42; }
+  .RAL9005 { background: #0a0a0a; }
+  .RAL9001 { background: #efe8d6; color: var(--text); }
+  .RAL3003 { background: #a52019; }
+  .RAL5015 { background: #0085b2; }
+  
+  .tab-container {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .tab {
+    padding: 12px 25px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-light);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+  }
+  
+  .tab.active {
+    color: var(--accent);
+    border-bottom: 3px solid var(--accent);
+  }
+  
+  .tab-content {
+    display: none;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 15px;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .veranda-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .veranda-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+    
+    .button-group {
+      flex-direction: column;
+    }
+    
+    .button-group button {
+      width: 100%;
+    }
+  }
+  
+  @media print {
+    body {
+      background: white;
+      padding: 0;
+      font-size: 12px;
+    }
+    
+    .container {
+      box-shadow: none;
+      padding: 10px;
+      max-width: 100%;
+    }
+    
+    .no-print {
+      display: none;
+    }
+    
+    .cutting-plan {
+      page-break-inside: avoid;
+    }
+    
+    .button-group {
+      display: none;
+    }
+    
+    .veranda-list {
+      display: none;
+    }
+    
+    .input-section {
+      display: none;
+    }
+    
+    .results-section {
+      display: block !important;
+    }
+    
+    .material-header {
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    
+    .cut-item {
+      padding: 8px;
+      font-size: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Veranda Zaagplan Generator</h1>
+  
+  <div class="input-section">
+    <h2>Veranda Specificaties</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="klantnaam">Klantnaam / Projectnummer</label>
+        <input id="klantnaam" type="text" placeholder="Bijv. Janssen of V2023-001">
+      </div>
+      <div class="form-group">
+        <label for="kleur">Kleur (RAL)</label>
+        <select id="kleur">
+          <option value="RAL7016">RAL7016 (Antraciet grijs)</option>
+          <option value="RAL9005">RAL9005 (Zwart)</option>
+          <option value="RAL9001">RAL9001 (Crème wit)</option>
+          <option value="RAL3003">RAL3003 (Signaal rood)</option>
+          <option value="RAL5015">RAL5015 (Hemelsblauw)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="dakType">Daktype</label>
+        <select id="dakType">
+          <option value="polycarbonaat">Polycarbonaat</option>
+          <option value="glas">Glas</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="breedte">Breedte (cm)</label>
+        <input id="breedte" type="number" min="100" max="1800" placeholder="100-1800 cm">
+      </div>
+      <div class="form-group">
+        <label for="diepte">Diepte (cm)</label>
+        <input id="diepte" type="number" min="100" max="1000" placeholder="100-1000 cm">
+      </div>
+      <div class="form-group" style="align-self: flex-end;">
+        <button class="btn-success" onclick="addVeranda()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Veranda Toevoegen
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="status-bar no-print">
+    <div class="status-count">
+      Aantal veranda's: <span id="verandaCount">0</span>
+    </div>
+    <div>
+      <button class="btn-primary" onclick="calculateOptimization()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Bereken Zaagplan
+      </button>
+      <button class="btn-danger" onclick="resetAll()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Reset Alles
+      </button>
+    </div>
+  </div>
+  
+  <div class="veranda-list" id="verandaList">
+    <div class="empty-state">
+      <p>Nog geen veranda's toegevoegd</p>
+      <p>Voeg veranda specificaties toe met het formulier hierboven</p>
+    </div>
+  </div>
+  
+  <div class="results-section" id="resultSection">
+    <div class="tab-container no-print">
+      <div class="tab active" onclick="switchTab('zaagplan')">Zaagplan</div>
+      <div class="tab" onclick="switchTab('materialen')">Materialen Overzicht</div>
+    </div>
+    
+    <div id="zaagplanTab" class="tab-content active">
+      <h2>Zaagplan Optimalisatie</h2>
+      <div id="optimizationResults"></div>
+    </div>
+    
+    <div id="materialenTab" class="tab-content">
+      <h2>Materialen Overzicht</h2>
+      <div id="materialOverview"></div>
+    </div>
+    
+    <div class="button-group no-print">
+      <button class="btn-export" onclick="exportToPDF()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Exporteer naar PDF
+      </button>
+      <button class="btn-warning" onclick="exportToExcel()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line>
+          <line x1="9" y1="15" x2="15" y2="15"></line>
+        </svg>
+        Exporteer naar Excel
+      </button>
+      <button class="btn-success" onclick="printWorkOrder()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Print Werkbon
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// Materialen met standaard lengtes
+const materialen = {
+  frame: [500, 600, 700, 800],
+  ligger: [600, 700],
+  sierklik: [600, 700],
+  bovenklik: [600, 700],
+  zijklik: [600, 700]
+};
+
+let verandas = [];
+
+// Formules voor materiaalberekening
+const formules = {
+  frame: (v) => [{
+    type: 'frame',
+    lengte: v.breedte,
+    aantal: 1,
+    omschrijving: 'Goot + muurprofiel'
+  }],
+  
+  ligger: (v) => {
+    const platenBreedte = Math.ceil(v.breedte / 100);
+    const aantalLiggers = platenBreedte + 1;
+    const lengte = v.diepte - (v.dakType === 'polycarbonaat' ? 8 : 14);
+    return [{
+      type: 'ligger',
+      lengte: lengte,
+      aantal: aantalLiggers,
+      omschrijving: `Leggers (${aantalLiggers} stuks)`
+    }];
+  },
+  
+  sierklik: (v) => {
+    const platenBreedte = Math.ceil(v.breedte / 100);
+    const lengte = (v.breedte - ((platenBreedte + 1) * 5.5)) / platenBreedte;
+    return [{
+      type: 'sierklik',
+      lengte: lengte,
+      aantal: platenBreedte,
+      omschrijving: `Sierklik (${platenBreedte} stuks)`
+    }];
+  },
+  
+  bovenklik: (v) => {
+    const aantalBovenklik = Math.ceil(v.breedte / 100) + 1;
+    const lengte = v.diepte - (v.dakType === 'polycarbonaat' ? 8 : 14);
+    return [{
+      type: 'bovenklik',
+      lengte: lengte,
+      aantal: aantalBovenklik,
+      omschrijving: `Bovenklik (${aantalBovenklik} stuks)`
+    }];
+  },
+  
+  zijklik: (v) => [{
+    type: 'zijklik',
+    lengte: v.diepte - (v.dakType === 'polycarbonaat' ? 8 : 14),
+    aantal: 2,
+    omschrijving: 'Zijklik (2 stuks)'
+  }]
+};
+
+function addVeranda() {
+  const klantnaam = document.getElementById('klantnaam').value.trim() || 'Onbekend';
+  const kleur = document.getElementById('kleur').value;
+  const dakType = document.getElementById('dakType').value;
+  const breedte = parseInt(document.getElementById('breedte').value);
+  const diepte = parseInt(document.getElementById('diepte').value);
+  
+  if (!breedte || isNaN(breedte) || breedte < 100 || breedte > 1800) {
+    alert('Voer een geldige breedte in tussen 100 en 1800 cm');
+    document.getElementById('breedte').focus();
+    return;
+  }
+  
+  if (!diepte || isNaN(diepte) || diepte < 100 || diepte > 1000) {
+    alert('Voer een geldige diepte in tussen 100 en 1000 cm');
+    document.getElementById('diepte').focus();
+    return;
+  }
+  
+  verandas.push({
+    id: Date.now(),
+    klantnaam,
+    kleur,
+    dakType,
+    breedte,
+    diepte
+  });
+  
+  updateVerandaList();
+  document.getElementById('klantnaam').value = '';
+  document.getElementById('breedte').value = '';
+  document.getElementById('diepte').value = '';
+  document.getElementById('klantnaam').focus();
+}
+
+function updateVerandaList() {
+  const container = document.getElementById('verandaList');
+  const countElement = document.getElementById('verandaCount');
+  
+  countElement.textContent = verandas.length;
+  
+  if (verandas.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <p>Nog geen veranda's toegevoegd</p>
+        <p>Voeg veranda specificaties toe met het formulier hierboven</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = verandas.map(v => `
+    <div class="veranda-item">
+      <div class="veranda-info">
+        <strong>${v.klantnaam}</strong>
+        <div class="veranda-details">
+          <span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            </svg>
+            ${v.breedte}x${v.diepte}cm
+          </span>
+          <span class="color-tag ${v.kleur}">${v.kleur}</span>
+          <span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            </svg>
+            ${v.dakType}
+          </span>
+        </div>
+      </div>
+      <div class="veranda-actions">
+        <button class="btn-danger" onclick="removeVeranda(${v.id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          Verwijder
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function removeVeranda(id) {
+  verandas = verandas.filter(v => v.id !== id);
+  updateVerandaList();
+}
+
+function resetAll() {
+  if (confirm('Weet u zeker dat u alles wilt resetten? Alle veranda gegevens zullen worden verwijderd.')) {
+    verandas = [];
+    updateVerandaList();
+    document.getElementById('resultSection').style.display = 'none';
+  }
+}
+
+function switchTab(tabName) {
+  // Update tabs
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => tab.classList.remove('active'));
+  
+  const activeTab = document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`);
+  if (activeTab) activeTab.classList.add('active');
+  
+  // Update content
+  const contents = document.querySelectorAll('.tab-content');
+  contents.forEach(content => content.classList.remove('active'));
+  
+  const activeContent = document.getElementById(`${tabName}Tab`);
+  if (activeContent) activeContent.classList.add('active');
+}
+
+function calculateOptimization() {
+  if (verandas.length === 0) {
+    alert('Voeg eerst veranda\'s toe');
+    return;
+  }
+
+  const result = {};
+  let totalWaste = 0;
+  let materialOverview = {};
+
+  // Groepeer per kleur
+  const verandasPerKleur = {};
+  verandas.forEach(v => {
+    if (!verandasPerKleur[v.kleur]) verandasPerKleur[v.kleur] = [];
+    verandasPerKleur[v.kleur].push(v);
+  });
+
+  // Optimaliseer per kleur
+  for (const [kleur, verandaList] of Object.entries(verandasPerKleur)) {
+    result[kleur] = {};
+    materialOverview[kleur] = {};
+    
+    // Bereken materialen voor deze kleur
+    const materials = calculateMaterials(verandaList);
+    
+    // Optimaliseer elk materiaaltype
+    for (const [type, items] of Object.entries(materials)) {
+      result[kleur][type] = optimizeMaterial(materialen[type], items);
+      totalWaste += result[kleur][type].totaleVerspilling;
+      
+      // Bouw materialen overzicht
+      materialOverview[kleur][type] = {
+        totaalAantal: items.length,
+        totaalLengte: items.reduce((sum, item) => sum + item.lengte, 0),
+        standaardLengtes: materialen[type],
+        benodigdeStandaard: result[kleur][type].combinaties.length
+      };
+    }
+  }
+
+  showResults(result, totalWaste);
+  showMaterialOverview(materialOverview);
+  document.getElementById('resultSection').style.display = 'block';
+  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function calculateMaterials(verandaList) {
+  const materials = {
+    frame: [],
+    ligger: [],
+    sierklik: [],
+    bovenklik: [],
+    zijklik: []
+  };
+
+  verandaList.forEach(v => {
+    // Bereken alle materialen voor deze veranda
+    Object.entries(formules).forEach(([type, fn]) => {
+      const items = fn(v);
+      items.forEach(item => {
+        for (let i = 0; i < item.aantal; i++) {
+          materials[type].push({
+            lengte: item.lengte,
+            naam: v.klantnaam,
+            type: item.type,
+            omschrijving: item.omschrijving,
+            verandaId: v.id
+          });
+        }
+      });
+    });
+  });
+
+  return materials;
+}
+
+function optimizeMaterial(standaardLengtes, benodigdheden) {
+  const result = {
+    combinaties: [],
+    totaleVerspilling: 0
+  };
+
+  standaardLengtes.sort((a,b) => a - b);
+  const sortedItems = [...benodigdheden].sort((a,b) => b.lengte - a.lengte);
+  let remainingItems = [...sortedItems];
+  
+  while (remainingItems.length > 0) {
+    let bestCombination = null;
+    let bestWaste = Infinity;
+    
+    for (const standaardLengte of standaardLengtes) {
+      const combination = findBestCombination(remainingItems, standaardLengte);
+      if (combination && combination.waste < bestWaste) {
+        bestCombination = combination;
+        bestWaste = combination.waste;
+      }
+    }
+    
+    if (bestCombination) {
+      result.combinaties.push(bestCombination);
+      result.totaleVerspilling += bestCombination.waste;
+      
+      bestCombination.items.forEach(item => {
+        const index = remainingItems.findIndex(i => 
+          i.naam === item.naam && 
+          i.lengte === item.lengte && 
+          i.type === item.type);
+        if (index !== -1) remainingItems.splice(index, 1);
+      });
+    } else {
+      const item = remainingItems[0];
+      const standaardLengte = standaardLengtes.find(l => l >= item.lengte) || standaardLengtes[standaardLengtes.length - 1];
+      const waste = standaardLengte - item.lengte;
+      
+      result.combinaties.push({
+        standaardLengte,
+        items: [item],
+        waste
+      });
+      result.totaleVerspilling += waste;
+      remainingItems.shift();
+    }
+  }
+  
+  return result;
+}
+
+function findBestCombination(items, maxLength) {
+  let bestCombination = null;
+  let bestWaste = Infinity;
+  
+  function findCombos(startIndex, currentCombo, currentLength) {
+    const waste = maxLength - currentLength;
+    
+    if (waste >= 0 && waste < bestWaste) {
+      bestCombination = {
+        standaardLengte: maxLength,
+        items: [...currentCombo],
+        waste: waste
+      };
+      bestWaste = waste;
+    }
+    
+    if (bestWaste === 0) return;
+    
+    for (let i = startIndex; i < items.length; i++) {
+      const item = items[i];
+      const newLength = currentLength + item.lengte;
+      
+      if (newLength <= maxLength) {
+        currentCombo.push(item);
+        findCombos(i + 1, currentCombo, newLength);
+        currentCombo.pop();
+      }
+    }
+  }
+  
+  findCombos(0, [], 0);
+  return bestCombination;
+}
+
+function showResults(result, totalWaste) {
+  let html = '';
+  
+  for (const [kleur, materialen] of Object.entries(result)) {
+    html += `
+      <div class="material-group">
+        <div class="material-header">Kleur: ${kleur}</div>
+    `;
+    
+    for (const [type, data] of Object.entries(materialen)) {
+      const typeName = {
+        'frame': 'Frame (Goot + Muurprofiel)',
+        'ligger': 'Leggers',
+        'sierklik': 'Sierklik',
+        'bovenklik': 'Bovenklik',
+        'zijklik': 'Zijklik'
+      }[type] || type;
+      
+      html += `
+        <div class="cutting-plan">
+          <div class="material-header">${typeName}</div>
+          <div class="cut-combination-container">
+      `;
+      
+      data.combinaties.forEach((combinatie, index) => {
+        const itemsPerKlant = {};
+        combinatie.items.forEach(item => {
+          if (!itemsPerKlant[item.naam]) itemsPerKlant[item.naam] = [];
+          itemsPerKlant[item.naam].push(item);
+        });
+        
+        html += `
+          <div class="cut-combination">
+            <div class="cut-header">
+              <span>Combinatie ${index + 1} (${combinatie.standaardLengte}cm profiel)</span>
+              <span class="waste-display">Verspilling: ${combinatie.waste.toFixed(1)}cm</span>
+            </div>
+            <div class="cut-items">
+              ${Object.entries(itemsPerKlant).map(([klantNaam, items]) => {
+                const itemsByType = {};
+                items.forEach(item => {
+                  if (!itemsByType[item.type]) itemsByType[item.type] = [];
+                  itemsByType[item.type].push(item);
+                });
+                
+                return `
+                  <div class="cut-item">
+                    <strong>${klantNaam}</strong>
+                    ${Object.entries(itemsByType).map(([itemType, typeItems]) => {
+                      const typeName = {
+                        'frame': 'Frame',
+                        'ligger': 'Leggers',
+                        'sierklik': 'Sierklik',
+                        'bovenklik': 'Bovenklik',
+                        'zijklik': 'Zijklik'
+                      }[itemType] || itemType;
+                      
+                      return `${typeItems.length}x ${typeName} (${typeItems[0].lengte.toFixed(1)}cm)`;
+                    }).join('<br>')}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `
+          </div>
+          <div style="text-align: right; margin-top: 10px; font-weight: 500;">
+            Totale verspilling: ${data.totaleVerspilling.toFixed(1)}cm
+          </div>
+        </div>
+      `;
+    }
+    
+    html += `</div>`;
+  }
+  
+  html += `
+    <div class="total-waste" id="totalWaste">
+      TOTALE VERSPILLING ALLE MATERIALEN: ${totalWaste.toFixed(1)}cm
+    </div>
+  `;
+  
+  document.getElementById('optimizationResults').innerHTML = html;
+}
+
+function showMaterialOverview(materialOverview) {
+  let html = '';
+  
+  for (const [kleur, materialen] of Object.entries(materialOverview)) {
+    html += `
+      <div class="material-group">
+        <div class="material-header">Kleur: ${kleur}</div>
+        <div class="cutting-plan">
+    `;
+    
+    for (const [type, data] of Object.entries(materialen)) {
+      const typeName = {
+        'frame': 'Frame (Goot + Muurprofiel)',
+        'ligger': 'Leggers',
+        'sierklik': 'Sierklik',
+        'bovenklik': 'Bovenklik',
+        'zijklik': 'Zijklik'
+      }[type] || type;
+      
+      html += `
+        <div style="margin-bottom: 20px;">
+          <h3>${typeName}</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+            <div class="cut-item">
+              <strong>Totaal aantal:</strong> ${data.totaalAantal}
+            </div>
+            <div class="cut-item">
+              <strong>Totaal lengte:</strong> ${data.totaalLengte.toFixed(1)}cm
+            </div>
+            <div class="cut-item">
+              <strong>Standaard lengtes:</strong> ${data.standaardLengtes.join('cm, ')}cm
+            </div>
+            <div class="cut-item">
+              <strong>Benodigde standaard:</strong> ${data.benodigdeStandaard}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    html += `
+        </div>
+      </div>
+    `;
+  }
+  
+  document.getElementById('materialOverview').innerHTML = html;
+}
+
+function exportToPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  // Titel
+  doc.setFontSize(18);
+  doc.setTextColor(44, 62, 80);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Veranda Zaagplan Werkbon', 105, 15, { align: 'center' });
+  
+  // Datum
+  doc.setFontSize(12);
+  doc.setTextColor(51, 51, 51);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Datum: ${new Date().toLocaleDateString('nl-NL')}`, 15, 25);
+  
+  // Veranda lijst
+  doc.setFontSize(14);
+  doc.setTextColor(44, 62, 80);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Veranda Specificaties:', 15, 35);
+  
+  let y = 45;
+  verandas.forEach((v, i) => {
+    doc.setFontSize(10);
+    doc.setTextColor(51, 51, 51);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${i+1}. ${v.klantnaam} - ${v.breedte}x${v.diepte}cm - ${v.kleur} - ${v.dakType}`, 20, y);
+    y += 7;
+  });
+  
+  // Zaagplan
+  doc.setFontSize(14);
+  doc.setTextColor(44, 62, 80);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Zaagplan Optimalisatie:', 15, y + 10);
+  y += 20;
+  
+  // Voeg HTML content toe als afbeelding
+  html2canvas(document.getElementById('optimizationResults')).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 190;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    
+    doc.addImage(imgData, 'PNG', 10, y, imgWidth, imgHeight);
+    
+    // Totale verspilling
+    const totalWaste = document.getElementById('totalWaste').textContent;
+    doc.setFontSize(12);
+    doc.setTextColor(231, 76, 60);
+    doc.setFont('helvetica', 'bold');
+    doc.text(totalWaste, 105, doc.internal.pageSize.height - 10, { align: 'center' });
+    
+    // Opslaan
+    doc.save(`Zaagplan_${new Date().toISOString().slice(0,10)}.pdf`);
+  });
+}
+
+function exportToExcel() {
+  // Maak een werkmap aan
+  const wb = XLSX.utils.book_new();
+  
+  // Veranda data
+  const verandaData = verandas.map(v => ({
+    'Klantnaam': v.klantnaam,
+    'Kleur': v.kleur,
+    'Daktype': v.dakType,
+    'Breedte (cm)': v.breedte,
+    'Diepte (cm)': v.diepte
+  }));
+  
+  const verandaWS = XLSX.utils.json_to_sheet(verandaData);
+  XLSX.utils.book_append_sheet(wb, verandaWS, "Veranda's");
+  
+  // Zaagplan data
+  const zaagplanData = [];
+  
+  // Groepeer per kleur
+  const verandasPerKleur = {};
+  verandas.forEach(v => {
+    if (!verandasPerKleur[v.kleur]) verandasPerKleur[v.kleur] = [];
+    verandasPerKleur[v.kleur].push(v);
+  });
+  
+  // Optimaliseer per kleur
+  for (const [kleur, verandaList] of Object.entries(verandasPerKleur)) {
+    const materials = calculateMaterials(verandaList);
+    
+    for (const [type, items] of Object.entries(materials)) {
+      const optimized = optimizeMaterial(materialen[type], items);
+      
+      optimized.combinaties.forEach((combo, idx) => {
+        combo.items.forEach(item => {
+          zaagplanData.push({
+            'Kleur': kleur,
+            'Materiaal': type,
+            'Combinatie': idx + 1,
+            'Standaard Lengte (cm)': combo.standaardLengte,
+            'Klantnaam': item.naam,
+            'Benodigde Lengte (cm)': item.lengte,
+            'Verspilling (cm)': combo.waste,
+            'Omschrijving': item.omschrijving
+          });
+        });
+      });
+    }
+  }
+  
+  const zaagplanWS = XLSX.utils.json_to_sheet(zaagplanData);
+  XLSX.utils.book_append_sheet(wb, zaagplanWS, "Zaagplan");
+  
+  // Materialen overzicht
+  const materialenData = [];
+  
+  const verandasPerKleur2 = {};
+  verandas.forEach(v => {
+    if (!verandasPerKleur2[v.kleur]) verandasPerKleur2[v.kleur] = [];
+    verandasPerKleur2[v.kleur].push(v);
+  });
+  
+  for (const [kleur, verandaList] of Object.entries(verandasPerKleur2)) {
+    const materials = calculateMaterials(verandaList);
+    
+    for (const [type, items] of Object.entries(materials)) {
+      const optimized = optimizeMaterial(materialen[type], items);
+      
+      materialenData.push({
+        'Kleur': kleur,
+        'Materiaal': type,
+        'Totaal Aantal': items.length,
+        'Totaal Lengte (cm)': items.reduce((sum, item) => sum + item.lengte, 0),
+        'Standaard Lengtes (cm)': materialen[type].join(', '),
+        'Benodigde Standaard': optimized.combinaties.length,
+        'Totale Verspilling (cm)': optimized.totaleVerspilling
+      });
+    }
+  }
+  
+  const materialenWS = XLSX.utils.json_to_sheet(materialenData);
+  XLSX.utils.book_append_sheet(wb, materialenWS, "Materialen");
+  
+  // Exporteer het Excel bestand
+  XLSX.writeFile(wb, `Zaagplan_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function printWorkOrder() {
+  // Maak een tijdelijk printvenster
+  const printWindow = window.open('', '', 'width=1200,height=800');
+  
+  // HTML voor de werkbon
+  let html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Veranda Zaagplan Werkbon</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #2c3e50; text-align: center; }
+        h2 { color: #2c3e50; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .info-block { margin-bottom: 20px; }
+        .veranda-list { margin-bottom: 30px; }
+        .veranda-item { margin-bottom: 15px; padding: 10px; border-left: 4px solid #3498db; }
+        .material-group { margin-bottom: 30px; page-break-inside: avoid; }
+        .material-header { background: #2c3e50; color: white; padding: 8px 12px; font-weight: bold; }
+        .cutting-plan { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; }
+        .cut-combination { margin-bottom: 15px; padding: 12px; background: #f8f8f8; border-radius: 5px; }
+        .cut-header { font-weight: bold; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .cut-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+        .cut-item { background: white; padding: 10px; border: 1px solid #eee; border-radius: 4px; }
+        .waste-display { color: #e74c3c; font-weight: bold; }
+        .total-waste { background: #fee2e2; padding: 15px; text-align: center; font-weight: bold; margin-top: 30px; font-size: 16px; }
+        @page { size: A4; margin: 10mm; }
+        .color-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; color: white; margin-left: 5px; }
+        .RAL7016 { background: #383e42; }
+        .RAL9005 { background: #0a0a0a; }
+        .RAL9001 { background: #efe8d6; color: #333; }
+        .RAL3003 { background: #a52019; }
+        .RAL5015 { background: #0085b2; }
+      </style>
+    </head>
+    <body>
+      <h1>Veranda Zaagplan Werkbon</h1>
+      
+      <div class="info-block">
+        <h2>Projectinformatie</h2>
+        <p><strong>Datum:</strong> ${new Date().toLocaleDateString('nl-NL')}</p>
+        <p><strong>Aantal veranda's:</strong> ${verandas.length}</p>
+      </div>
+      
+      <div class="veranda-list">
+        <h2>Veranda Specificaties</h2>
+        ${verandas.map((v, i) => `
+          <div class="veranda-item">
+            <p><strong>${i+1}. ${v.klantnaam}</strong> <span class="color-tag ${v.kleur}">${v.kleur}</span></p>
+            <p><strong>Afmetingen:</strong> ${v.breedte}x${v.diepte}cm</p>
+            <p><strong>Daktype:</strong> ${v.dakType}</p>
+          </div>
+        `).join('')}
+      </div>
+  `;
+  
+  // Voeg zaagplan toe
+  const result = {};
+  let totalWaste = 0;
+  
+  // Groepeer per kleur
+  const verandasPerKleur = {};
+  verandas.forEach(v => {
+    if (!verandasPerKleur[v.kleur]) verandasPerKleur[v.kleur] = [];
+    verandasPerKleur[v.kleur].push(v);
+  });
+  
+  // Optimaliseer per kleur
+  for (const [kleur, verandaList] of Object.entries(verandasPerKleur)) {
+    result[kleur] = {};
+    const materials = calculateMaterials(verandaList);
+    
+    for (const [type, items] of Object.entries(materials)) {
+      result[kleur][type] = optimizeMaterial(materialen[type], items);
+      totalWaste += result[kleur][type].totaleVerspilling;
+    }
+  }
+  
+  // Voeg zaagplan HTML toe
+  for (const [kleur, materialen] of Object.entries(result)) {
+    html += `
+      <div class="material-group">
+        <h2>Kleur: ${kleur}</h2>
+    `;
+    
+    for (const [type, data] of Object.entries(materialen)) {
+      const typeName = {
+        'frame': 'Frame (Goot + Muurprofiel)',
+        'ligger': 'Leggers',
+        'sierklik': 'Sierklik',
+        'bovenklik': 'Bovenklik',
+        'zijklik': 'Zijklik'
+      }[type] || type;
+      
+      html += `
+        <div class="cutting-plan">
+          <h3>${typeName}</h3>
+          <div class="cut-combination-container">
+      `;
+      
+      data.combinaties.forEach((combinatie, index) => {
+        const itemsPerKlant = {};
+        combinatie.items.forEach(item => {
+          if (!itemsPerKlant[item.naam]) itemsPerKlant[item.naam] = [];
+          itemsPerKlant[item.naam].push(item);
+        });
+        
+        html += `
+          <div class="cut-combination">
+            <div class="cut-header">
+              <span>Combinatie ${index + 1} (${combinatie.standaardLengte}cm profiel)</span>
+              <span class="waste-display">Verspilling: ${combinatie.waste.toFixed(1)}cm</span>
+            </div>
+            <div class="cut-items">
+              ${Object.entries(itemsPerKlant).map(([klantNaam, items]) => {
+                const itemsByType = {};
+                items.forEach(item => {
+                  if (!itemsByType[item.type]) itemsByType[item.type] = [];
+                  itemsByType[item.type].push(item);
+                });
+                
+                return `
+                  <div class="cut-item">
+                    <strong>${klantNaam}</strong><br>
+                    ${Object.entries(itemsByType).map(([itemType, typeItems]) => {
+                      const typeName = {
+                        'frame': 'Frame',
+                        'ligger': 'Leggers',
+                        'sierklik': 'Sierklik',
+                        'bovenklik': 'Bovenklik',
+                        'zijklik': 'Zijklik'
+                      }[itemType] || itemType;
+                      
+                      return `${typeItems.length}x ${typeName} (${typeItems[0].lengte.toFixed(1)}cm)`;
+                    }).join('<br>')}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `
+          </div>
+          <div style="text-align: right; margin-top: 10px; font-weight: bold;">
+            Totale verspilling: ${data.totaleVerspilling.toFixed(1)}cm
+          </div>
+        </div>
+      `;
+    }
+    
+    html += `</div>`;
+  }
+  
+  html += `
+    <div class="total-waste">
+      TOTALE VERSPILLING ALLE MATERIALEN: ${totalWaste.toFixed(1)}cm
+    </div>
+    </body>
+    </html>
+  `;
+  
+  // Schrijf de HTML naar het printvenster en print
+  printWindow.document.write(html);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 500);
+}
+</script>
+</body>
+</html>

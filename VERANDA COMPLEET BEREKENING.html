@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"/>
+<title>BESTELFORMULIER BEST Veranda & Overkappingen B.V.</title>
+<style>
+  :root {
+    --primary: #0066cc;
+    --primary-dark: #0055aa;
+    --secondary: #cc0000;
+    --secondary-dark: #a30000;
+    --success: #006600;
+    --success-dark: #004d00;
+    --text: #333;
+    --light-bg: #f0f4f8;
+    --white: #ffffff;
+    --border: #ccc;
+    --shadow: 0 5px 15px rgba(0,0,0,0.1);
+    --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --transition-speed: 0.15s;
+  }
+  
+  body { 
+    font-family: 'Segoe UI', Arial, sans-serif; 
+    background: var(--light-bg); 
+    padding: 1rem; 
+    color: var(--text); 
+    line-height: 1.6;
+  }
+  
+  .container { 
+    max-width: 800px;
+    margin: auto; 
+    background: var(--white); 
+    padding: 1.5rem; 
+    border-radius: 1rem; 
+    box-shadow: var(--shadow);
+  }
+  
+  h1 { 
+    font-size: 1.6rem; 
+    text-align: center; 
+    color: var(--secondary); 
+    margin-bottom: 1.5rem; 
+    padding-bottom: 0.5rem; 
+    position: relative;
+  }
+  
+  h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+  }
+  
+  label { 
+    display: block; 
+    margin-top: 0.8rem; 
+    font-size: 0.9rem; 
+    font-weight: 500;
+    color: var(--text);
+  }
+  
+  input, select, textarea { 
+    width: 100%; 
+    margin-top: 0.4rem; 
+    font-size: 0.95rem; 
+    padding: 0.6rem; 
+    border: 1px solid var(--border); 
+    border-radius: 0.4rem; 
+    transition: all var(--transition-speed) ease;
+    background: var(--white);
+  }
+  
+  input:focus, select:focus, textarea:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 3px rgba(0,102,204,0.2); 
+    outline: none; 
+  }
+  
+  button { 
+    margin-top: 1rem; 
+    padding: 0.7rem 1.5rem; 
+    font-size: 0.95rem; 
+    font-weight: 600; 
+    border: none; 
+    border-radius: 0.4rem; 
+    cursor: pointer; 
+    transition: all var(--transition-speed) ease;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+  .section { 
+    border-radius: 0.5rem; 
+    padding: 1.2rem; 
+    margin-bottom: 1.2rem; 
+    background: var(--white); 
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  
+  .section h2 { 
+    font-size: 1.15rem; 
+    color: var(--primary); 
+    margin-bottom: 0.8rem; 
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  #output { 
+    display: none; 
+    margin-top: 2rem; 
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  #actionButtons { 
+    text-align: center; 
+    margin-top: 1.5rem; 
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+  
+  #printButton, #resetButton { 
+    display: none; 
+    padding: 0.8rem 1.5rem; 
+    font-size: 0.95rem;
+    min-width: 160px;
+  }
+  
+  #printButton { 
+    background: var(--success); 
+    color: var(--white); 
+  }
+  
+  #printButton:hover { 
+    background: var(--success-dark); 
+  }
+  
+  #resetButton { 
+    background: var(--secondary); 
+    color: var(--white); 
+  }
+  
+  #resetButton:hover { 
+    background: var(--secondary-dark); 
+  }
+
+  /* Formulier layout verbeteringen */
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .form-col {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+  
+  .checkbox-item input[type="checkbox"] {
+    width: auto;
+    margin-top: 0;
+  }
+  
+  select.compact-select {
+    padding: 0.6rem 0.8rem;
+  }
+
+  /* Print styling - automatische aanpassing */
+  @media print {
+    body * { 
+      visibility: hidden; 
+    }
+    #printOutput, #printOutput * { 
+      visibility: visible; 
+    }
+    #printOutput { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%;
+      padding: 0; 
+      margin: 0;
+    }
+    
+    .print-title { 
+      font-size: 18pt; 
+      font-weight: bold; 
+      color: var(--secondary); 
+      margin-bottom: 2mm; 
+      text-align: center;
+    }
+    
+    .print-veranda-size { 
+      font-size: 16pt; 
+      font-weight: bold; 
+      text-align: center; 
+      margin: 2mm 0 3mm 0; 
+      color: var(--success); 
+      background: #f0f0f0; 
+      padding: 2mm; 
+      border-radius: 1mm; 
+      border: 1px solid var(--primary); 
+    }
+    
+    .print-summary {
+      font-size: 14pt;
+      margin-bottom: 3mm;
+      padding: 2mm;
+      background: #f0f4f8;
+      border-radius: 1mm;
+      border: 1px solid #ddd;
+      font-weight: bold;
+    }
+    
+    .print-subtitle { 
+      font-size: 16pt; 
+      font-weight: bold; 
+      color: var(--primary); 
+      margin: 2mm 0; 
+      border-bottom: 1px solid #ddd; 
+      padding-bottom: 1mm; 
+    }
+    
+    .print-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin: 2mm 0 3mm 0; 
+      font-size: 14pt; 
+      page-break-inside: avoid;
+    }
+    
+    .print-table th { 
+      background-color: var(--primary); 
+      color: white; 
+      text-align: left; 
+      padding: 1mm; 
+      border: 1px solid #ddd; 
+      font-weight: bold;
+    }
+    
+    .print-table td { 
+      padding: 1mm; 
+      border: 1px solid #ddd; 
+      font-weight: bold;
+    }
+    
+    .print-vrijstaand { 
+      font-size: 14pt; 
+      color: var(--secondary); 
+      font-weight: bold; 
+      margin-bottom: 3mm; 
+      background: #ffeeee; 
+      padding: 1mm; 
+      border-radius: 1mm; 
+      text-align: center;
+    }
+    
+    .print-schroeven { 
+      font-size: 14pt; 
+      margin: 2mm 0; 
+      padding: 2mm; 
+      background: #f0f8ff; 
+      border-radius: 1mm; 
+      border: 1px solid #ddd; 
+      font-weight: bold;
+      page-break-inside: avoid;
+    }
+    
+    .print-notes { 
+      margin-top: 2mm; 
+      padding: 2mm; 
+      border: 1px dashed #999; 
+      font-size: 14pt; 
+      background: #f9f9f9; 
+      border-radius: 1mm; 
+      font-weight: bold;
+      page-break-inside: avoid;
+    }
+    
+    .print-checkbox { 
+      width: 5mm; 
+      height: 5mm; 
+      border: 1px solid #000; 
+      display: inline-block; 
+      margin-right: 1mm; 
+      vertical-align: middle; 
+    }
+    
+    .print-kleur {
+      font-weight: bold;
+      color: var(--secondary);
+    }
+    
+    .print-verstevigd {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12pt;
+    }
+    
+    @page { 
+      size: A4; 
+      margin: 10mm; 
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+      max-width: 95%;
+    }
+    
+    .form-row {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .section {
+      padding: 1rem;
+    }
+    
+    #actionButtons {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    #printButton, #resetButton {
+      width: 100%;
+    }
+    
+    .checkbox-group {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+</head>
+<body>
+<div class="container">
+  <h1>BESTELFORMULIER BEST Veranda & Overkappingen B.V.</h1>
+  
+  <div class="section">
+    <label>Selecteer daktype:</label>
+    <select id="dakTypeSelect" onchange="laadFormulier()">
+      <option value="">-- Kies een daktype --</option>
+      <option value="polycarbonaat">Polycarbonaat dak</option>
+      <option value="glas">Glazen dak</option>
+    </select>
+  </div>
+  
+  <form id="orderForm" style="display:none;">
+    <!-- Dynamisch ingevuld op basis van daktype -->
+  </form>
+  
+  <div id="output">
+    <div id="printOutput"></div>
+    <div id="actionButtons">
+      <button id="printButton" onclick="window.print()">Print Bestelformulier</button>
+      <button id="resetButton" type="button" onclick="resetFormulier()">Formulier resetten</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/nl.js"></script>
+<script>
+// Basis functies
+function getCurrentDate() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const year = today.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
+function getOphaaldatum(dakType, diepte) {
+  const today = new Date();
+  let daysToAdd = 7; // Standaard voor polycarbonaat
+  
+  if (dakType === "glas") {
+    daysToAdd = diepte > 321 ? 13 : 10;
+  }
+  
+  const ophaaldatum = new Date(today);
+  ophaaldatum.setDate(today.getDate() + daysToAdd);
+  
+  // Format as DD-MM-YYYY
+  const day = String(ophaaldatum.getDate()).padStart(2, '0');
+  const month = String(ophaaldatum.getMonth() + 1).padStart(2, '0');
+  const year = ophaaldatum.getFullYear();
+  
+  return `${day}-${month}-${year}`;
+}
+
+// Formulier validatie
+function validateInput(input, min, max) {
+  input.addEventListener("change", function() {
+    let value = parseInt(this.value);
+    if (isNaN(value)) {
+      this.value = min;
+    } else if (value < min) {
+      this.value = min;
+    } else if (value > max) {
+      this.value = max;
+    }
+    
+    if (this.id === "diepte") {
+      const dakType = document.getElementById("dakTypeSelect").value;
+      if (dakType) {
+        const ophaaldatumInput = document.getElementById("ophaaldatum");
+        const newOphaaldatum = getOphaaldatum(dakType, parseInt(this.value));
+        ophaaldatumInput._flatpickr.setDate(newOphaaldatum, true);
+      }
+    }
+  });
+}
+
+// Formulier laden
+function laadFormulier() {
+  const dakType = document.getElementById("dakTypeSelect").value;
+  const orderForm = document.getElementById("orderForm");
+  
+  if (!dakType) {
+    orderForm.style.display = "none";
+    document.getElementById("output").style.display = "none";
+    return;
+  }
+  
+  orderForm.style.display = "block";
+  document.getElementById("output").style.display = "none";
+  
+  if (dakType === "polycarbonaat") {
+    orderForm.innerHTML = `
+      <div class="section">
+        <h2>Klantgegevens</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Klantnaam</label>
+            <input id="klantnaam" placeholder="Naam klant..." type="text" required/>
+          </div>
+          <div class="form-col">
+            <label>Referentie</label>
+            <input id="referentie" placeholder="Referentie..." type="text"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Ophaaldatum</label>
+            <input id="ophaaldatum" type="text" class="datepicker" placeholder="Selecteer datum" value="${getOphaaldatum('polycarbonaat', 300)}"/>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Basisgegevens</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label style="font-weight:bold; color:#cc0000;">Kleur (RAL)</label>
+            <select id="kleur">
+              <option selected>RAL7016 - Antraciet</option>
+              <option>RAL9005 - Zwart</option>
+              <option>RAL9001 - Crème</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>LED verlichting</label>
+            <select id="ledType">
+              <option selected>Geen</option>
+              <option>LED-lampen</option>
+              <option>LED DIMBAAR</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Afmetingen & Opties</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Breedte (cm)</label>
+            <input id="breedte" type="number" value="600" min="100" max="1800" required/>
+          </div>
+          <div class="form-col">
+            <label>Diepte (cm)</label>
+            <input id="diepte" type="number" value="300" min="100" max="1000" required/>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <label for="soortDak">Daktype</label>
+            <select id="soortDak" name="soortDak">
+              <option value="standaard opaal">Standaard opaal</option>
+              <option value="helder">Helder</option>
+              <option value="zonwerend">Zonwerend</option>
+              <option value="geen">Geen</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input id="vrijstaand" type="checkbox"/> Vrijstaande veranda</label>
+          <label class="checkbox-item"><input id="abbox" type="checkbox"/> AB (Ayak Bitimi)</label>
+          <label class="checkbox-item"><input id="manualEntry" type="checkbox"/> Handmatige invoer</label>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Extra's</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Spie links</label>
+            <select id="spieLinks">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Glas</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Spie rechts</label>
+            <select id="spieRechts">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Glas</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <label>Zijwand links</label>
+            <select id="zijwandLinks">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Vaste glaswand</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Zijwand rechts</label>
+            <select id="zijwandRechts">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Vaste glaswand</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <label>Glazen schuifwand 3 rails</label>
+            <input id="gsw3" type="number" min="0" value="0"/>
+          </div>
+          <div class="form-col">
+            <label>Glazen schuifwand 4 rails</label>
+            <input id="gsw4" type="number" min="0" value="0"/>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <label>Glazen schuifwand 5 rails</label>
+            <input id="gsw5" type="number" min="0" value="0"/>
+          </div>
+          <div class="form-col">
+            <label>Glazen schuifwand 6 rails</label>
+            <input id="gsw6" type="number" min="0" value="0"/>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Opmerkingen</h2>
+        <textarea id="opmerkingen" rows="3" placeholder="Speciale wensen of opmerkingen..."></textarea>
+      </div>
+      
+      <div class="form-row">
+        <button type="button" onclick="bereken()" style="background: var(--primary); color: white; flex: 1;">Bereken en toon overzicht</button>
+      </div>
+    `;
+  } else if (dakType === "glas") {
+    orderForm.innerHTML = `
+      <div class="section">
+        <h2>Klantgegevens</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Klantnaam</label>
+            <input id="klantnaam" placeholder="Naam klant..." type="text" required/>
+          </div>
+          <div class="form-col">
+            <label>Referentie</label>
+            <input id="referentie" placeholder="Referentie..." type="text"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Ophaaldatum</label>
+            <input id="ophaaldatum" type="text" class="datepicker" placeholder="Selecteer datum" value="${getOphaaldatum('glas', 350)}"/>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Basisgegevens</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label style="font-weight:bold; color:#cc0000;">Kleur (RAL)</label>
+            <select id="kleur">
+              <option selected>RAL7016 - Antraciet</option>
+              <option>RAL9005 - Zwart</option>
+              <option>RAL9001 - Crème</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>LED verlichting</label>
+            <select id="ledType">
+              <option selected>Geen</option>
+              <option>LED-lampen</option>
+              <option>LED DIMBAAR</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Afmetingen & Opties</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Breedte (cm)</label>
+            <input id="breedte" type="number" value="600" min="100" max="1800" required/>
+          </div>
+          <div class="form-col">
+            <label>Diepte (cm)</label>
+            <input id="diepte" type="number" value="350" min="100" max="1000" required/>
+          </div>
+        </div>
+        
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input id="vrijstaand" type="checkbox"/> Vrijstaande veranda</label>
+          <label class="checkbox-item"><input id="manualEntry" type="checkbox"/> Handmatige invoer</label>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Extra's</h2>
+        <div class="form-row">
+          <div class="form-col">
+            <label>Spie links</label>
+            <select id="spieLinks">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Glas</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Spie rechts</label>
+            <select id="spieRechts">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Glas</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <label>Zijwand links</label>
+            <select id="zijwandLinks">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Vaste glaswand</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label>Zijwand rechts</label>
+            <select id="zijwandRechts">
+              <option selected value="geen">Geen</option>
+              <option>Opaal</option>
+              <option>Helder</option>
+              <option>Aluminium</option>
+              <option>Sandwich</option>
+              <option>Vaste glaswand</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <label>Glazen schuifwand 3 rails</label>
+            <input id="gsw3" type="number" min="0" value="0"/>
+          </div>
+          <div class="form-col">
+            <label>Glazen schuifwand 4 rails</label>
+            <input id="gsw4" type="number" min="0" value="0"/>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-col">
+            <label>Glazen schuifwand 5 rails</label>
+            <input id="gsw5" type="number" min="0" value="0"/>
+          </div>
+          <div class="form-col">
+            <label>Glazen schuifwand 6 rails</label>
+            <input id="gsw6" type="number" min="0" value="0"/>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Opmerkingen</h2>
+        <textarea id="opmerkingen" rows="3" placeholder="Speciale wensen of opmerkingen..."></textarea>
+      </div>
+      
+      <div class="form-row">
+        <button type="button" onclick="bereken()" style="background: var(--primary); color: white; flex: 1;">Bereken en toon overzicht</button>
+      </div>
+    `;
+  }
+  
+  // Initialiseer datum picker
+  flatpickr(".datepicker", {
+    dateFormat: "d-m-Y",
+    locale: "nl",
+    minDate: "today"
+  });
+  
+  // Valideer numerieke inputs
+  validateInput(document.getElementById("breedte"), 100, 1800);
+  validateInput(document.getElementById("diepte"), 100, 1000);
+  validateInput(document.getElementById("gsw3"), 0, 10);
+  validateInput(document.getElementById("gsw4"), 0, 10);
+  validateInput(document.getElementById("gsw5"), 0, 10);
+  validateInput(document.getElementById("gsw6"), 0, 10);
+}
+
+// Berekeningen voor schroeven
+function berekenSchroeven(diepte, spieLinks, spieRechts, bovenklikAantal, zijklikAantal, staanders) {
+  let kleineSchroeven = 0;
+  let langeSchroeven = 0;
+  let zelftappers = 0;
+  
+  if (spieLinks !== 'geen') kleineSchroeven += 8;
+  if (spieRechts !== 'geen') kleineSchroeven += 8;
+  
+  langeSchroeven = (bovenklikAantal + 2) * 2;
+  zelftappers = staanders * 4 + bovenklikAantal * 2 + zijklikAantal * 2;
+  
+  return { kleineSchroeven, langeSchroeven, zelftappers };
+}
+
+// Automatische font size aanpassing voor print
+function pasFontSizeAan(printHTML) {
+  // Maak een verborgen div om de hoogte te meten
+  const testDiv = document.createElement('div');
+  testDiv.id = 'printTestDiv';
+  testDiv.style.position = 'absolute';
+  testDiv.style.left = '-9999px';
+  testDiv.style.width = '210mm'; // A4 breedte
+  testDiv.style.padding = '10mm'; // Marges
+  testDiv.innerHTML = printHTML;
+  document.body.appendChild(testDiv);
+  
+  // Bepaal de benodigde font size
+  let fontSize = 12; // Start met 12pt
+  let minFontSize = 8; // Minimale leesbare grootte
+  let maxPaginaHoogte = 297 - 20; // A4 hoogte minus marges (in mm)
+  
+  while (fontSize >= minFontSize) {
+    // Pas de font size toe
+    testDiv.style.fontSize = fontSize + 'pt';
+    
+    // Meet de hoogte
+    const divHoogte = testDiv.offsetHeight;
+    const mmHoogte = divHoogte * 0.264583; // Converteer pixels naar mm
+    
+    // Controleer of het past
+    if (mmHoogte <= maxPaginaHoogte) {
+      break;
+    }
+    
+    // Verklein de font size
+    fontSize -= 0.5;
+  }
+  
+  // Verwijder de test div
+  document.body.removeChild(testDiv);
+  
+  // Als we onder de minimale grootte komen, toon een waarschuwing
+  if (fontSize < minFontSize) {
+    alert('Waarschuwing: Er is te veel informatie voor één pagina. De inhoud is mogelijk moeilijk leesbaar.');
+    fontSize = minFontSize;
+  }
+  
+  return fontSize;
+}
+
+// Hoofdberekening
+function bereken() {
+  try {
+    const dakType = document.getElementById("dakTypeSelect").value;
+    if (!dakType) {
+      alert("Selecteer eerst een daktype");
+      return;
+    }
+    
+    // Verzamel alle ingevoerde gegevens
+    const klantnaam = document.getElementById("klantnaam").value || "Onbekende klant";
+    const referentie = document.getElementById("referentie").value || "";
+    const diepte = parseInt(document.getElementById("diepte").value);
+    const ophaaldatum = document.getElementById("ophaaldatum").value || getOphaaldatum(dakType, diepte);
+    const kleur = document.getElementById("kleur").value;
+    const ledType = document.getElementById("ledType").value;
+    const b = parseInt(document.getElementById("breedte").value);
+    const d = diepte;
+    const vrijstaand = document.getElementById("vrijstaand").checked;
+    const manualEntry = document.getElementById("manualEntry").checked;
+    const ab = dakType === "polycarbonaat" ? document.getElementById("abbox").checked : false;
+    const spieL = document.getElementById("spieLinks").value;
+    const spieR = document.getElementById("spieRechts").value;
+    const zijL = document.getElementById("zijwandLinks").value;
+    const zijR = document.getElementById("zijwandRechts").value;
+    const gsw3 = parseInt(document.getElementById("gsw3").value);
+    const gsw4 = parseInt(document.getElementById("gsw4").value);
+    const gsw5 = parseInt(document.getElementById("gsw5").value);
+    const gsw6 = parseInt(document.getElementById("gsw6").value);
+    const opmerkingen = document.getElementById("opmerkingen").value;
+    const soortDak = dakType === "polycarbonaat" ? document.getElementById("soortDak").value : "Glas";
+    
+    // Bepaal daktype tekst
+    let dakTypeTekst = "";
+    if (dakType === "polycarbonaat") {
+      if (soortDak === "helder" || soortDak === "zonwerend" || soortDak === "geen") {
+        dakTypeTekst = `VERANDA POLYCARBONAAT ${soortDak.toUpperCase()} !!!!`;
+      } else {
+        dakTypeTekst = `VERANDA POLYCARBONAAT ${soortDak.toUpperCase()}`;
+      }
+    } else {
+      dakTypeTekst = "VERANDA GLAS !!!!";
+    }
+    
+    const ralKleur = kleur.split(" - ")[0];
+    let ledTekst = ledType === 'Geen' ? " | GEEN LED LAMPEN !!" : ` | ${ledType}`;
+    let kleurWaarschuwing = (ralKleur === "RAL9005" || ralKleur === "RAL9001") ? " !!!" : "";
+    
+    // Bouw de print HTML op
+    let printHTML = `
+      <div class="print-title">BEST Veranda & Overkappingen B.V.</div>
+      
+      <div class="print-veranda-size">
+        ${dakTypeTekst}<br>
+        AFMETING: ${b} CM X ${d} CM<br>
+        <span class="print-kleur">${ralKleur}${kleurWaarschuwing}${ledTekst}</span>
+      </div>
+      
+      <div class="print-summary">
+        <strong>Klant:</strong> ${klantnaam} ${referentie ? '<span class="print-reference">(' + referentie + ')</span>' : ''} | 
+        <strong>Ophaaldatum:</strong> ${ophaaldatum}
+      </div>
+    `;
+    
+    if (vrijstaand) {
+      printHTML += `<div class="print-vrijstaand">VRIJSTAANDE VERANDA - EXTRA PROFIELEN NODIG</div>`;
+    }
+    
+    if (ab && dakType === "polycarbonaat") {
+      printHTML += `<div class="print-vrijstaand">AB (AYAK BITIMI) - EXTRA PROFIELEN NODIG</div>`;
+    }
+    
+    if (manualEntry) {
+      printHTML += `
+        <div class="print-subtitle">TE ZAGEN PROFIELEN (HANDMATIGE INVOER)</div>
+        <table class="print-table">
+          <tr>
+            <th style="width:70%;">Omschrijving</th>
+            <th style="width:15%;">Aantal</th>
+            <th style="width:15%;">Klaar</th>
+          </tr>
+          <tr><td>Goot</td><td>1</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Muurprofiel</td><td>1</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Liggers</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Sierkliks</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Bovenklik</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Zijklik</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>${dakType === "polycarbonaat" ? "Polycarbonaat platen" : "Glasplaten"}</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>
+          ${vrijstaand ? '<tr><td>Staanders (vrijstaand)</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>' : ''}
+          <tr><td>Staanders</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>HWA-afvoer/bocht/schroeven</td><td>1</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Goot en muurplaat kapjes</td><td>1</td><td><div class="print-checkbox"></div></td></tr>
+          ${ledType !== 'Geen' ? `<tr><td>LED verlichting (${ledType === "LED-lampen" ? "Normaal" : "DIMBAAR"})</td><td>.........</td><td><div class="print-checkbox"></div></td></tr>` : ''}
+        </table>
+        
+        <div class="print-subtitle">SCHROEVEN (HANDMATIGE INVOER)</div>
+        <div class="print-schroeven">
+          <strong>Kleine schroeven:</strong> ......... stuks (voor spieën)<br>
+          <strong>Lange schroeven:</strong> ......... stuks (voor dak)<br>
+          <strong>Korte zelftappers:</strong> ......... stuks (voor staanders en klikken)
+        </div>
+      `;
+    } else if (dakType === "polycarbonaat") {
+      // Polycarbonaat berekeningen
+      const platen = Math.ceil(b / 100);
+      const liggers = Math.ceil(b / 100) + 1;
+      const lampenAantal = (liggers - 2) * 2;
+      
+      let liggerLengte = d - 7;
+      if (ab) liggerLengte = d - 14;
+      else if (vrijstaand) liggerLengte = d - 30;
+      
+      let bovenklikLengte = d, zijklikLengte = d, polyDiepte = d;
+      if (ab) {
+        bovenklikLengte = d - 8;
+        zijklikLengte = d - 8;
+        polyDiepte = d - 8;
+      } else if (vrijstaand) {
+        bovenklikLengte = d - 24;
+        zijklikLengte = d - 24;
+        polyDiepte = d - 24;
+      }
+      
+      const bovenklikAantal = liggers - 2;
+      const zijklikAantal = 2;
+      const sierklikLengte = ((b - (liggers * 5.5)) / platen).toFixed(1);
+      const sierklikAantal = liggers * 2 - 2;
+      const polyBreedte = (parseFloat(sierklikLengte) + 3.3).toFixed(1);
+      
+      let staanders;
+      if (b <= 620) staanders = 2;
+      else if (b <= 1200) staanders = 3;
+      else staanders = 4;
+      
+      let extraVrijstaandeStaanders = 0;
+      if (vrijstaand) {
+        if (b <= 600) extraVrijstaandeStaanders = 2;
+        else if (b <= 1200) extraVrijstaandeStaanders = 3;
+        else extraVrijstaandeStaanders = 4;
+      }
+      
+      const { kleineSchroeven, langeSchroeven, zelftappers } = berekenSchroeven(d, spieL, spieR, bovenklikAantal, zijklikAantal, staanders + extraVrijstaandeStaanders);
+      
+      printHTML += `
+        <div class="print-subtitle">TE ZAGEN PROFIELEN</div>
+        <table class="print-table">
+          <tr>
+            <th style="width:50%;">Omschrijving</th>
+            <th style="width:15%;">Aantal</th>
+            <th style="width:25%;">Lengte</th>
+            <th style="width:10%;">Klaar</th>
+          </tr>
+          <tr><td>Goot</td><td>1</td><td>${b} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Muurprofiel</td><td>1</td><td>${b} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Liggers</td><td>${liggers}</td><td>${liggerLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Sierkliks</td><td>${sierklikAantal}</td><td>${sierklikLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Bovenklik</td><td>${bovenklikAantal}</td><td>${bovenklikLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Zijklik</td><td>${zijklikAantal}</td><td>${zijklikLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Polycarbonaat platen (${soortDak})</td><td>${platen}</td><td>${polyBreedte} x ${polyDiepte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          ${vrijstaand ? `<tr><td>Staanders (vrijstaand)</td><td>${extraVrijstaandeStaanders}</td><td>300 cm</td><td><div class="print-checkbox"></div></td></tr>` : ''}
+          <tr><td>Staanders</td><td>${staanders}</td><td>250 cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>HWA-afvoer/bocht/schroeven</td><td>1</td><td>set</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Goot en muurplaat kapjes</td><td>1</td><td>set</td><td><div class="print-checkbox"></div></td></tr>
+          ${ledType !== 'Geen' ? `<tr><td>LED verlichting (${ledType === "LED-lampen" ? "Normaal" : "DIMBAAR"})</td><td>${lampenAantal}</td><td>${lampenAantal} stuks</td><td><div class="print-checkbox"></div></td></tr>` : ''}
+        </table>
+        
+        <div class="print-subtitle">SCHROEVEN</div>
+        <div class="print-schroeven">
+          <strong>Kleine schroeven:</strong> ${kleineSchroeven} stuks (voor spieën)<br>
+          <strong>Lange schroeven:</strong> ${langeSchroeven} stuks (voor dak)<br>
+          <strong>Korte zelftappers:</strong> ${zelftappers} stuks (voor staanders en klikken)
+        </div>
+      `;
+    } else if (dakType === "glas") {
+      // Glas berekeningen
+      const liggerBreedte = 5.5;
+      const glasOverlap = 3.0;
+      const maxGlasBreedte = 83.5;
+      
+      let glasplaten = Math.max(1, Math.floor(b / 100));
+      let liggers = glasplaten + 1;
+      const lampenAantal = (liggers - 2) * 2;
+      
+      let sierklikLengte, glasBreedte;
+      do {
+        const totaleLiggerBreedte = liggers * liggerBreedte;
+        const ruimteVoorGlas = b - totaleLiggerBreedte;
+        sierklikLengte = (ruimteVoorGlas / glasplaten).toFixed(1);
+        glasBreedte = (parseFloat(sierklikLengte) + glasOverlap).toFixed(1);
+        
+        if (parseFloat(glasBreedte) > maxGlasBreedte && glasplaten < Math.ceil(b / 70)) {
+          glasplaten++;
+          liggers = glasplaten + 1;
+        } else {
+          break;
+        }
+      } while (true);
+
+      let liggerLengte = vrijstaand ? d - 30 : d - 14;
+      let bovenklikLengte = vrijstaand ? d - 24 : d - 8;
+      let zijklikLengte = vrijstaand ? d - 24 : d - 8;
+      let glasDiepte = vrijstaand ? d - 24 : d - 8;
+      
+      const isVerstevigdeLigger = d > 350;
+      const bovenklikAantal = liggers - 2;
+      const zijklikAantal = 2;
+      const sierklikAantal = liggers * 2 - 2;
+      
+      let staanders;
+      if (b <= 565) staanders = 2;
+      else if (b <= 1200) staanders = 3;
+      else staanders = 4;
+      
+      let extraVrijstaandeStaanders = 0;
+      if (vrijstaand) {
+        if (b <= 600) extraVrijstaandeStaanders = 2;
+        else if (b <= 1200) extraVrijstaandeStaanders = 3;
+        else extraVrijstaandeStaanders = 4;
+      }
+      
+      const { kleineSchroeven, langeSchroeven, zelftappers } = berekenSchroeven(d, spieL, spieR, bovenklikAantal, zijklikAantal, staanders + extraVrijstaandeStaanders);
+      
+      printHTML += `
+        <div class="print-subtitle">TE ZAGEN PROFIELEN</div>
+        <table class="print-table">
+          <tr>
+            <th style="width:50%;">Omschrijving</th>
+            <th style="width:15%;">Aantal</th>
+            <th style="width:25%;">Lengte</th>
+            <th style="width:10%;">Klaar</th>
+          </tr>
+          <tr><td>Goot</td><td>1</td><td>${b} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Muurprofiel</td><td>1</td><td>${b} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Liggers${isVerstevigdeLigger ? ' <span class="print-verstevigd">(VERSTEVID)</span>' : ''}</td><td>${liggers}</td><td>${liggerLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Sierkliks</td><td>${sierklikAantal}</td><td>${sierklikLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Bovenklik</td><td>${bovenklikAantal}</td><td>${bovenklikLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Zijklik</td><td>${zijklikAantal}</td><td>${zijklikLengte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Glasplaten</td><td>${glasplaten}</td><td>Breed: ${glasBreedte} cm, Diepte: ${glasDiepte} cm</td><td><div class="print-checkbox"></div></td></tr>
+          ${vrijstaand ? `<tr><td>Staanders (vrijstaand)</td><td>${extraVrijstaandeStaanders}</td><td>300 cm</td><td><div class="print-checkbox"></div></td></tr>` : ''}
+          <tr><td>Staanders</td><td>${staanders}</td><td>250 cm</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>HWA-afvoer/bocht/schroeven</td><td>1</td><td>set</td><td><div class="print-checkbox"></div></td></tr>
+          <tr><td>Goot en muurplaat kapjes</td><td>1</td><td>set</td><td><div class="print-checkbox"></div></td></tr>
+          ${ledType !== 'Geen' ? `<tr><td>LED verlichting (${ledType === "LED-lampen" ? "Normaal" : "DIMBAAR"})</td><td>${lampenAantal}</td><td>${lampenAantal} stuks</td><td><div class="print-checkbox"></div></td></tr>` : ''}
+        </table>
+        
+        <div class="print-subtitle">SCHROEVEN</div>
+        <div class="print-schroeven">
+          <strong>Kleine schroeven:</strong> ${kleineSchroeven} stuks (voor spieën)<br>
+          <strong>Lange schroeven:</strong> ${langeSchroeven} stuks (voor dak)<br>
+          <strong>Korte zelftappers:</strong> ${zelftappers} stuks (voor staanders en klikken)
+        </div>
+      `;
+    }
+    
+    // Extra's verwerken
+    const extras = [];
+    if (spieL !== 'geen') extras.push({name: `Spie links (${spieL})`, amount: 1});
+    if (spieR !== 'geen') extras.push({name: `Spie rechts (${spieR})`, amount: 1});
+    if (zijL !== 'geen') extras.push({name: `Zijwand links (${zijL})`, amount: 1});
+    if (zijR !== 'geen') extras.push({name: `Zijwand rechts (${zijR})`, amount: 1});
+    if (gsw3 > 0) extras.push({name: 'Glazen schuifwand - 3 rails', amount: gsw3});
+    if (gsw4 > 0) extras.push({name: 'Glazen schuifwand - 4 rails', amount: gsw4});
+    if (gsw5 > 0) extras.push({name: 'Glazen schuifwand - 5 rails', amount: gsw5});
+    if (gsw6 > 0) extras.push({name: 'Glazen schuifwand - 6 rails', amount: gsw6});
+    
+    if (extras.length > 0) {
+      printHTML += `
+        <div class="print-subtitle">EXTRA'S</div>
+        <table class="print-table">
+          ${extras.map(extra => `
+            <tr>
+              <td>${extra.name}</td>
+              <td>${manualEntry ? '.........' : extra.amount}</td>
+              <td><div class="print-checkbox"></div></td>
+            </tr>
+          `).join('')}
+        </table>
+      `;
+    }
+      
+    if (opmerkingen.trim() !== "") {
+      printHTML += `
+        <div class="print-subtitle">OPMERKINGEN</div>
+        <div class="print-notes">${opmerkingen}</div>
+      `;
+    }
+
+    // Bepaal de optimale font size
+    const fontSize = pasFontSizeAan(printHTML);
+    
+    // Pas de styling aan voor print
+    const style = document.createElement('style');
+    style.id = 'dynamicPrintStyle';
+    style.textContent = `
+      @media print {
+        #printOutput, #printOutput * {
+          font-size: ${fontSize}pt !important;
+        }
+        .print-title {
+          font-size: ${fontSize + 4}pt !important;
+        }
+        .print-veranda-size {
+          font-size: ${fontSize + 2}pt !important;
+        }
+        .print-subtitle {
+          font-size: ${fontSize + 2}pt !important;
+        }
+        .print-table, .print-notes, .print-summary, .print-vrijstaand, .print-schroeven {
+          font-size: ${fontSize}pt !important;
+        }
+        .print-checkbox {
+          width: ${Math.max(3, fontSize - 4)}mm !important;
+          height: ${Math.max(3, fontSize - 4)}mm !important;
+        }
+        .print-verstevigd {
+          font-size: ${fontSize - 2}pt !important;
+        }
+      }
+    `;
+    
+    // Verwijder bestaande dynamic style als die er is
+    const existingStyle = document.getElementById('dynamicPrintStyle');
+    if (existingStyle) {
+      document.head.removeChild(existingStyle);
+    }
+    
+    document.head.appendChild(style);
+    
+    // Toon het resultaat
+    document.getElementById("printOutput").innerHTML = printHTML;
+    document.getElementById("output").style.display = "block";
+    document.getElementById("printButton").style.display = "inline-block";
+    document.getElementById("resetButton").style.display = "inline-block";
+    
+    document.getElementById("output").scrollIntoView({ behavior: 'smooth' });
+    
+  } catch (e) {
+    console.error("Fout in bereken():", e);
+    alert("Er is een fout opgetreden bij het berekenen. Controleer de ingevoerde waarden.");
+  }
+}
+
+// Formulier resetten
+function resetFormulier() {
+  if (confirm("Weet u zeker dat u het formulier wilt resetten? Alle ingevoerde gegevens gaan verloren.")) {
+    document.getElementById("orderForm").style.display = "none";
+    document.getElementById("output").style.display = "none";
+    document.getElementById("printButton").style.display = "none";
+    document.getElementById("resetButton").style.display = "none";
+    document.getElementById("dakTypeSelect").value = "";
+  }
+}
+
+// Initialisatie
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById("output").style.display = "none";
+  document.getElementById("printButton").style.display = "none";
+  document.getElementById("resetButton").style.display = "none";
+});
+</script>
+</body>
+</html>

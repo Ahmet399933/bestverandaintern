@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>BEST Veranda - Glaswand Calculator</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --primary-light: #007bff;
+            --primary-lighter: #e6f0ff;
+            --secondary: #dc3545;
+            --secondary-light: #ff6b7b;
+            --secondary-lighter: #ffebee;
+            --success: #28a745;
+            --info: #17a2b8;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --dark: #343a40;
+            --border: #dee2e6;
+            --text: #212529;
+            --new-item: #fff3cd;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: var(--text);
+            background-color: var(--white);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--white) 100%);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: var(--dark);
+            font-size: 1.2rem;
+        }
+        
+        .card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .card-title {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: var(--white);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,86,179,0.1);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            color: var(--primary);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-danger {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: var(--secondary-light);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .afmetingen-container {
+            margin-top: 25px;
+        }
+        
+        .afmeting-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .afmeting-card.new-item {
+            background-color: var(--new-item);
+            animation: highlight 2s ease;
+        }
+        
+        @keyframes highlight {
+            0% { background-color: var(--new-item); }
+            100% { background-color: var(--white); }
+        }
+        
+        .remove-afmeting {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .remove-afmeting:hover {
+            transform: scale(1.1);
+        }
+        
+        .results {
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result-section {
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .result-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .result-content {
+            padding: 20px;
+            background-color: var(--white);
+        }
+        
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .option-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .option-card.selected {
+            border: 2px solid var(--success);
+            background-color: rgba(40, 167, 69, 0.05);
+        }
+        
+        .option-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .option-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-left: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .badge-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .badge-info {
+            background: var(--info);
+            color: white;
+        }
+        
+        .badge-warning {
+            background: #ffc107;
+            color: var(--dark);
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .spec-item {
+            background: var(--light-bg);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        
+        .spec-item strong {
+            color: var(--dark);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .spec-item span {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        .spec-highlight {
+            background-color: rgba(0, 86, 179, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .option-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .main-spec {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .main-spec-icon {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .position-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .position-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--white);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .position-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .zijoptie-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .zijoptie-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--white);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .zijoptie-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .printable, .printable * {
+                visibility: visible;
+            }
+            
+            .printable {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                margin: 0;
+                background: white;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            .print-header {
+                text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid var(--primary);
+            }
+            
+            .print-header h2 {
+                font-size: 24px;
+                color: var(--primary);
+                margin-bottom: 5px;
+            }
+            
+            .print-header p {
+                font-size: 16px;
+                color: var(--dark);
+            }
+            
+            .print-section {
+                margin-bottom: 20px;
+                page-break-inside: avoid;
+            }
+            
+            h3 {
+                font-size: 18px;
+                color: var(--primary);
+                margin-bottom: 10px;
+                border-bottom: 1px solid var(--primary);
+                padding-bottom: 5px;
+            }
+            
+            table {
+                width: 100%;
+                margin-bottom: 15px;
+                border-collapse: collapse;
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            th {
+                background-color: var(--primary);
+                color: white;
+                font-weight: bold;
+            }
+            
+            .important {
+                font-weight: bold;
+                color: #000;
+                font-size: 14px !important;
+            }
+            
+            .print-flex {
+                display: flex;
+                gap: 30px;
+                margin-bottom: 20px;
+            }
+            
+            .print-flex > div {
+                flex: 1;
+            }
+            
+            .print-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .summary-box {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                border: 1px solid #ddd;
+            }
+            
+            .summary-item {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+            
+            .summary-item strong {
+                color: var(--primary);
+                font-weight: 600;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header no-print">
+        <h1>BEST Veranda Glaswand Calculator</h1>
+        <p>Professionele berekening voor glazen schuifwanden</p>
+    </div>
+
+    <div class="card no-print">
+        <h2 class="card-title">Klantgegevens</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="klantnaam">Klantnaam</label>
+                <input type="text" id="klantnaam" placeholder="Bijv. Jansen">
+                <i class="fas fa-user input-icon"></i>
+            </div>
+            <div class="form-group">
+                <label for="kleur">Kleur profiel</label>
+                <select id="kleur">
+                    <option value="RAL7016">RAL 7016 (Antraciet grijs)</option>
+                    <option value="RAL9005">RAL 9005 (Diepzwart)</option>
+                    <option value="RAL9001">RAL 9001 (Crèmewit)</option>
+                </select>
+                <i class="fas fa-palette input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="handvat">Handvatten</label>
+                <select id="handvat">
+                    <option value="nee">Geen handvatten</option>
+                    <option value="RAL7016">RAL 7016 (Antraciet)</option>
+                    <option value="RAL9005">RAL 9005 (Diepzwart)</option>
+                    <option value="RAL9001">RAL 9001 (Crèmewit)</option>
+                </select>
+                <i class="fas fa-hand-paper input-icon"></i>
+            </div>
+            <div class="form-group">
+                <label for="opmerkingen">Opmerkingen</label>
+                <textarea id="opmerkingen" placeholder="Speciale wensen of notities"></textarea>
+                <i class="fas fa-comment input-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card no-print">
+        <h2 class="card-title">Afmetingen</h2>
+        <div class="afmetingen-container" id="afmetingen-container">
+            <!-- Afmetingen worden hier dynamisch toegevoegd -->
+        </div>
+
+        <div class="form-row">
+            <button class="btn btn-primary" onclick="voegAfmetingToe()"><i class="fas fa-plus"></i> Afmeting toevoegen</button>
+            <button class="btn btn-success" onclick="berekenAlles()"><i class="fas fa-calculator"></i> Berekenen</button>
+        </div>
+    </div>
+
+    <div class="results no-print" id="resultaten-sectie" style="display:none;">
+        <div class="card">
+            <h2 class="card-title">Beste Glascombinaties</h2>
+            <div id="resultaten-container">
+                <!-- Resultaten worden hier dynamisch toegevoegd -->
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="maakOrderformulier()"><i class="fas fa-file-alt"></i> Orderformulier genereren</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="printable" class="printable"></div>
+
+<script>
+// Configuratie
+const config = {
+    prefOverlapMin: 4,
+    prefOverlapMax: 7,
+    minOverlap: 2,
+    maxOverlap: 10,
+    staanderBreedte: 14,
+    hoogteReductie: 10,
+    glasBreedtes: [93, 98, 103],
+    maxGlasHoogte: 235,
+    railSysteem: [
+        { max: 300, rails: 3 },
+        { max: 400, rails: 4 },
+        { max: 500, rails: 5 },
+        { max: 600, rails: 6 }
+    ]
+};
+
+let afmetingen = [];
+let resultaten = [];
+let selectedOptions = {};
+
+// Initialisatie
+document.addEventListener('DOMContentLoaded', function() {
+    window.scrollTo(0, 0);
+    voegAfmetingToe();
+});
+
+function voegAfmetingToe() {
+    const afmetingId = Date.now();
+    afmetingen.push({
+        id: afmetingId,
+        type: 'bestaand',
+        breedte: 500,
+        hoogte: 220,
+        overlap: 6,
+        positie: 'voorkant',
+        zijoptie: null
+    });
+
+    const afmetingHtml = `
+        <div class="afmeting-card new-item" id="afmeting-${afmetingId}">
+            <button class="remove-afmeting" onclick="verwijderAfmeting(${afmetingId})">×</button>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Type</label>
+                    <select onchange="updateAfmeting(${afmetingId}, 'type', this.value)">
+                        <option value="bestaand">Bestaande afmeting</option>
+                        <option value="veranda">Veranda</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>${afmetingen[afmetingen.length-1].type === 'bestaand' ? 'Kaderbreedte (cm)' : 'Verandabreedte (cm)'}</label>
+                    <input type="number" value="500" min="100" max="600" 
+                           onchange="updateAfmeting(${afmetingId}, 'breedte', this.value)">
+                    <i class="fas fa-ruler-horizontal input-icon"></i>
+                </div>
+                <div class="form-group">
+                    <label>Ruimtehoogte (cm)</label>
+                    <input type="number" value="220" min="100" max="300" 
+                           onchange="updateAfmeting(${afmetingId}, 'hoogte', this.value)">
+                    <i class="fas fa-ruler-vertical input-icon"></i>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Gewenste overlap (cm)</label>
+                    <input type="number" value="6" min="4" max="8" step="0.5" 
+                           onchange="updateAfmeting(${afmetingId}, 'overlap', this.value)">
+                    <i class="fas fa-arrows-alt-h input-icon"></i>
+                </div>
+            </div>
+            ${afmetingen[afmetingen.length-1].type === 'veranda' ? `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Positie</label>
+                    <div class="position-selector">
+                        <div class="position-btn selected" 
+                             onclick="updateAfmeting(${afmetingId}, 'positie', 'voorkant'); this.parentNode.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected'); updateZijoptieVisibility(${afmetingId})">
+                            <i class="fas fa-door-open"></i> Voorkant
+                        </div>
+                        <div class="position-btn" 
+                             onclick="updateAfmeting(${afmetingId}, 'positie', 'zijkant'); this.parentNode.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected'); updateZijoptieVisibility(${afmetingId})">
+                            <i class="fas fa-border-style"></i> Zijkant
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" id="zijoptie-row-${afmetingId}" style="display:none;">
+                <div class="form-group">
+                    <label>Zijoptie</label>
+                    <div class="zijoptie-selector">
+                        <div class="zijoptie-btn" 
+                             onclick="updateAfmeting(${afmetingId}, 'zijoptie', 'vrijstaand'); this.parentNode.querySelectorAll('.zijoptie-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected')">
+                            Vrijstaand
+                        </div>
+                        <div class="zijoptie-btn" 
+                             onclick="updateAfmeting(${afmetingId}, 'zijoptie', 'ab'); this.parentNode.querySelectorAll('.zijoptie-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected')">
+                            AB (Ayak Bitimi)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            ` : ''}
+        </div>
+    `;
+
+    document.getElementById('afmetingen-container').insertAdjacentHTML('beforeend', afmetingHtml);
+    
+    // Verwijder highlight klasse na animatie
+    setTimeout(() => {
+        const card = document.getElementById(`afmeting-${afmetingId}`);
+        if (card) card.classList.remove('new-item');
+    }, 2000);
+    
+    // Focus op het eerste invoerveld
+    const firstInput = document.querySelector(`#afmeting-${afmetingId} input[type="number"]`);
+    if (firstInput) {
+        firstInput.focus();
+    }
+}
+
+function updateZijoptieVisibility(afmetingId) {
+    const afmeting = afmetingen.find(a => a.id === afmetingId);
+    if (!afmeting) return;
+
+    const zijoptieRow = document.getElementById(`zijoptie-row-${afmetingId}`);
+    if (zijoptieRow) {
+        zijoptieRow.style.display = afmeting.positie === 'zijkant' ? 'block' : 'none';
+    }
+}
+
+function verwijderAfmeting(id) {
+    afmetingen = afmetingen.filter(a => a.id !== id);
+    const element = document.getElementById(`afmeting-${id}`);
+    if (element) {
+        element.remove();
+    }
+    if (afmetingen.length === 0) {
+        document.getElementById('resultaten-sectie').style.display = 'none';
+    }
+}
+
+function updateAfmeting(id, veld, waarde) {
+    const afmeting = afmetingen.find(a => a.id === id);
+    if (afmeting) {
+        afmeting[veld] = veld === 'breedte' || veld === 'hoogte' || veld === 'overlap' ? parseFloat(waarde) : waarde;
+        
+        if (veld === 'type') {
+            const afmetingElement = document.getElementById(`afmeting-${id}`);
+            if (afmetingElement) {
+                const breedteLabel = afmetingElement.querySelector('label');
+                if (breedteLabel) {
+                    breedteLabel.textContent = waarde === 'bestaand' ? 'Kaderbreedte (cm)' : 'Verandabreedte (cm)';
+                }
+                
+                // Update positie selector visibility
+                const positieRow = afmetingElement.querySelector('.position-selector');
+                if (positieRow) {
+                    positieRow.parentNode.parentNode.style.display = waarde === 'veranda' ? 'block' : 'none';
+                } else if (waarde === 'veranda') {
+                    // Add position selector if it doesn't exist
+                    const html = `
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Positie</label>
+                                <div class="position-selector">
+                                    <div class="position-btn selected" 
+                                         onclick="updateAfmeting(${id}, 'positie', 'voorkant'); this.parentNode.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected'); updateZijoptieVisibility(${id})">
+                                        <i class="fas fa-door-open"></i> Voorkant
+                                    </div>
+                                    <div class="position-btn" 
+                                         onclick="updateAfmeting(${id}, 'positie', 'zijkant'); this.parentNode.querySelectorAll('.position-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected'); updateZijoptieVisibility(${id})">
+                                        <i class="fas fa-border-style"></i> Zijkant
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row" id="zijoptie-row-${id}" style="display:none;">
+                            <div class="form-group">
+                                <label>Zijoptie</label>
+                                <div class="zijoptie-selector">
+                                    <div class="zijoptie-btn" 
+                                         onclick="updateAfmeting(${id}, 'zijoptie', 'vrijstaand'); this.parentNode.querySelectorAll('.zijoptie-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected')">
+                                        Vrijstaand
+                                    </div>
+                                    <div class="zijoptie-btn" 
+                                         onclick="updateAfmeting(${id}, 'zijoptie', 'ab'); this.parentNode.querySelectorAll('.zijoptie-btn').forEach(btn => btn.classList.remove('selected')); this.classList.add('selected')">
+                                        AB (Ayak Bitimi)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    afmetingElement.insertAdjacentHTML('beforeend', html);
+                    afmeting.positie = 'voorkant';
+                    afmeting.zijoptie = null;
+                }
+            }
+        }
+        
+        if (veld === 'positie') {
+            updateZijoptieVisibility(id);
+        }
+    }
+}
+
+function berekenAlles() {
+    if (afmetingen.length === 0) {
+        alert('Voeg minimaal één afmeting toe');
+        return;
+    }
+    
+    resultaten = [];
+    selectedOptions = {};
+    const resultatenContainer = document.getElementById('resultaten-container');
+    resultatenContainer.innerHTML = '';
+    
+    afmetingen.forEach((afmeting, index) => {
+        const resultaat = berekenAfmeting(afmeting, index + 1);
+        resultaten.push(resultaat);
+        
+        let optiesHtml = '';
+        
+        // Bepaal de beste optie (dichtst bij gewenste overlap)
+        let besteOptieIndex = 0;
+        let besteAfwijking = Math.abs(resultaat.opties[0].overlap - afmeting.overlap);
+        
+        resultaat.opties.forEach((optie, i) => {
+            const afwijking = Math.abs(optie.overlap - afmeting.overlap);
+            if (afwijking < besteAfwijking) {
+                besteOptieIndex = i;
+                besteAfwijking = afwijking;
+            }
+        });
+        
+        selectedOptions[`${resultaat.volgnummer}-${besteOptieIndex}`] = true;
+        
+        resultaat.opties.forEach((optie, optieIndex) => {
+            const isBesteOptie = optieIndex === besteOptieIndex;
+            const isPreferred = optie.overlap >= config.prefOverlapMin && optie.overlap <= config.prefOverlapMax;
+            const isMinOverlap = optie.overlap < config.prefOverlapMin;
+            const isMaxOverlap = optie.overlap > config.prefOverlapMax;
+            
+            optiesHtml += `
+                <div class="option-card ${isBesteOptie ? 'selected' : ''}" 
+                     onclick="selectOption(${resultaat.volgnummer}, ${optieIndex}, this)">
+                    <div class="option-header">
+                        <input type="radio" name="optie-${resultaat.volgnummer}" 
+                               id="optie-${resultaat.volgnummer}-${optieIndex}" 
+                               ${isBesteOptie ? 'checked' : ''}>
+                        <div class="option-title">Optie ${optieIndex + 1}</div>
+                        ${isBesteOptie ? '<span class="badge badge-success">Aanbevolen</span>' : ''}
+                        ${isPreferred ? '<span class="badge badge-info">Ideale overlap</span>' : ''}
+                        ${isMinOverlap ? '<span class="badge badge-warning">Minimale overlap</span>' : ''}
+                        ${isMaxOverlap ? '<span class="badge badge-warning">Maximale overlap</span>' : ''}
+                    </div>
+                    
+                    <div class="main-spec">
+                        <i class="fas fa-window-maximize main-spec-icon"></i>
+                        <span>${optie.glasBreedte} cm × ${optie.glasHoogte} cm</span>
+                    </div>
+                    <div class="main-spec">
+                        <i class="fas fa-layer-group main-spec-icon"></i>
+                        <span>${optie.rails} panelen (${optie.rails}-rail systeem)</span>
+                    </div>
+                    
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <strong>Overlap</strong>
+                            <span>${optie.overlap.toFixed(1)} cm</span>
+                        </div>
+                        <div class="spec-item">
+                            <strong>Totale breedte</strong>
+                            <span>${(optie.glasBreedte * optie.rails).toFixed(1)} cm</span>
+                        </div>
+                    </div>
+                    
+                    <div class="option-footer">
+                        <div>
+                            <strong>Glasprofielen:</strong> ${optie.rails} × ${optie.glasBreedte} cm
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        const afmetingHtml = `
+            <div class="result-section">
+                <div class="result-header">
+                    Afmeting ${index + 1} (${afmeting.type === 'bestaand' ? 'Bestaand' : 'Veranda'})
+                </div>
+                <div class="result-content">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div class="spec-item">
+                            <strong>Breedte</strong>
+                            <span>${afmeting.breedte} cm</span>
+                        </div>
+                        <div class="spec-item">
+                            <strong>Hoogte</strong>
+                            <span>${afmeting.hoogte} cm</span>
+                        </div>
+                        ${afmeting.type === 'veranda' ? `
+                        <div class="spec-item">
+                            <strong>Positie</strong>
+                            <span>${afmeting.positie === 'voorkant' ? 'Voorkant' : 'Zijkant'}</span>
+                        </div>
+                        ${afmeting.positie === 'zijkant' && afmeting.zijoptie ? `
+                        <div class="spec-item">
+                            <strong>Zijoptie</strong>
+                            <span>${afmeting.zijoptie === 'vrijstaand' ? 'Vrijstaand' : 'AB (Ayak Bitimi)'}</span>
+                        </div>
+                        ` : ''}
+                        ` : ''}
+                    </div>
+                    
+                    <h3 style="color: var(--primary); margin: 20px 0 15px 0;">Mogelijke combinaties</h3>
+                    <div class="option-grid">
+                        ${optiesHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        resultatenContainer.insertAdjacentHTML('beforeend', afmetingHtml);
+    });
+    
+    document.getElementById('resultaten-sectie').style.display = 'block';
+    
+    // Scroll naar resultaten
+    setTimeout(() => {
+        document.getElementById('resultaten-sectie').scrollIntoView({ 
+            behavior: 'smooth'
+        });
+    }, 100);
+}
+
+function selectOption(volgnummer, optieIndex, element) {
+    // Verwijder alle selecties voor deze afmeting
+    document.querySelectorAll(`input[name="optie-${volgnummer}"]`).forEach(radio => {
+        radio.checked = false;
+    });
+    document.querySelectorAll(`.option-card.selected`).forEach(card => {
+        if (card.closest('#resultaten-container') === element.closest('#resultaten-container')) {
+            card.classList.remove('selected');
+        }
+    });
+    
+    // Selecteer de gekozen optie
+    const radio = document.getElementById(`optie-${volgnummer}-${optieIndex}`);
+    if (radio) {
+        radio.checked = true;
+        element.classList.add('selected');
+    }
+    
+    // Update selectedOptions
+    Object.keys(selectedOptions).forEach(key => {
+        if (key.startsWith(`${volgnummer}-`)) {
+            delete selectedOptions[key];
+        }
+    });
+    selectedOptions[`${volgnummer}-${optieIndex}`] = true;
+}
+
+function berekenAfmeting(afmeting, volgnummer) {
+    let beschikbareBreedte = afmeting.breedte;
+    
+    if (afmeting.type === 'veranda') {
+        if (afmeting.positie === 'zijkant') {
+            // Voor zijkant veranda
+            if (afmeting.zijoptie === 'vrijstaand') {
+                beschikbareBreedte -= 30; // 30cm aftrek voor vrijstaand
+            } else if (afmeting.zijoptie === 'ab') {
+                beschikbareBreedte -= 14; // 14cm aftrek voor AB
+            } else {
+                beschikbareBreedte -= 7; // Standaard 7cm aftrek als geen zijoptie geselecteerd
+            }
+        } else {
+            // Voor voorkant veranda
+            beschikbareBreedte -= (afmeting.breedte <= 600 ? 2 : 3) * config.staanderBreedte;
+        }
+    }
+    
+    const werkhoogte = Math.min(config.maxGlasHoogte, afmeting.hoogte - config.hoogteReductie);
+    const rails = config.railSysteem.find(s => afmeting.breedte <= s.max)?.rails || 6;
+    
+    const opties = [];
+    
+    for (const breedte of config.glasBreedtes) {
+        const totaalGlas = rails * breedte;
+        const overlap = (totaalGlas - beschikbareBreedte) / rails;
+        
+        if (overlap >= config.minOverlap) {
+            opties.push({
+                rails: rails,
+                glasBreedte: breedte,
+                glasHoogte: werkhoogte,
+                overlap: overlap,
+                combinatie: `${rails} × ${breedte} cm glas`
+            });
+        }
+    }
+    
+    // Sorteer op overlap (van klein naar groot)
+    opties.sort((a, b) => a.overlap - b.overlap);
+    
+    return {
+        volgnummer: volgnummer,
+        type: afmeting.type,
+        breedte: afmeting.breedte,
+        hoogte: afmeting.hoogte,
+        werkhoogte: werkhoogte,
+        opties: opties
+    };
+}
+
+function maakOrderformulier() {
+    if (resultaten.length === 0) {
+        alert('Bereken eerst de afmetingen');
+        return;
+    }
+    
+    const printable = document.getElementById("printable");
+    const klantnaam = document.getElementById('klantnaam').value || 'Niet opgegeven';
+    const kleurText = document.getElementById('kleur').options[document.getElementById('kleur').selectedIndex].text;
+    const handvatText = document.getElementById('handvat').value !== 'nee' ? 
+        document.getElementById('handvat').options[document.getElementById('handvat').selectedIndex].text : 'Geen';
+    const opmerkingen = document.getElementById('opmerkingen').value;
+    
+    let afmetingenHtml = '';
+    let glasOverzicht = {};
+    let profielOverzicht = {};
+    let railOverzicht = {};
+    let totaalHandvatten = 0;
+    
+    resultaten.forEach(resultaat => {
+        const selectedOptionKey = Object.keys(selectedOptions).find(key => key.startsWith(`${resultaat.volgnummer}-`));
+        if (!selectedOptionKey) return;
+        
+        const optieIndex = parseInt(selectedOptionKey.split('-')[1]);
+        const optie = resultaat.opties[optieIndex];
+        if (!optie) return;
+        
+        // Voeg toe aan glasoverzicht
+        const glasKey = `${optie.glasBreedte}x${optie.glasHoogte}`;
+        if (!glasOverzicht[glasKey]) {
+            glasOverzicht[glasKey] = { 
+                breedte: optie.glasBreedte, 
+                hoogte: optie.glasHoogte, 
+                aantal: 0
+            };
+        }
+        glasOverzicht[glasKey].aantal += optie.rails;
+        
+        // Voeg toe aan profieloverzicht
+        const profielKey = `${optie.glasBreedte}`;
+        if (!profielOverzicht[profielKey]) {
+            profielOverzicht[profielKey] = { 
+                breedte: optie.glasBreedte, 
+                aantal: 0
+            };
+        }
+        profielOverzicht[profielKey].aantal += optie.rails;
+        
+        // Voeg toe aan railoverzicht
+        const railKey = `${optie.rails}-rail`;
+        if (!railOverzicht[railKey]) {
+            railOverzicht[railKey] = 0;
+        }
+        railOverzicht[railKey] += 1;
+        
+        // Tel handvatten (1 per railsysteem)
+        if (document.getElementById('handvat').value !== 'nee') {
+            totaalHandvatten += 1;
+        }
+    });
+    
+    // Bouw rail overzicht string
+    let railOverzichtStr = '';
+    for (const [rails, aantal] of Object.entries(railOverzicht)) {
+        railOverzichtStr += `${aantal} × ${rails}, `;
+    }
+    railOverzichtStr = railOverzichtStr.slice(0, -2);
+    
+    // Bouw glas overzicht string
+    let glasOverzichtStr = '';
+    for (const [key, data] of Object.entries(glasOverzicht)) {
+        glasOverzichtStr += `${data.aantal} × ${data.breedte}×${data.hoogte} cm, `;
+    }
+    glasOverzichtStr = glasOverzichtStr.slice(0, -2);
+    
+    // Bouw profiel overzicht string
+    let profielOverzichtStr = '';
+    for (const [key, data] of Object.entries(profielOverzicht)) {
+        profielOverzichtStr += `${data.aantal} × ${data.breedte} cm, `;
+    }
+    profielOverzichtStr = profielOverzichtStr.slice(0, -2);
+    
+    printable.innerHTML = `
+        <div class="print-header">
+            <h2>BEST VERANDA</h2>
+            <p>Orderformulier Glas Schuifwand</p>
+        </div>
+        
+        <div class="print-flex">
+            <div>
+                <table>
+                    <tr>
+                        <th colspan="2">Klantgegevens</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Klant:</strong></td>
+                        <td class="important">${klantnaam}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Datum:</strong></td>
+                        <td class="important">${new Date().toLocaleDateString('nl-NL', {day: '2-digit', month: '2-digit', year: 'numeric'})}</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table>
+                    <tr>
+                        <th colspan="2">Specificaties</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Kleur profiel:</strong></td>
+                        <td class="important">${kleurText}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Handvatten:</strong></td>
+                        <td class="important">${handvatText} (${totaalHandvatten} stuks)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="summary-box">
+            <h3>Materialen Overzicht</h3>
+            <div class="summary-item">
+                <strong>Rail systemen:</strong>
+                <span>${railOverzichtStr}</span>
+            </div>
+            <div class="summary-item">
+                <strong>Glaspanelen:</strong>
+                <span>${glasOverzichtStr}</span>
+            </div>
+            <div class="summary-item">
+                <strong>Glasprofielen:</strong>
+                <span>${profielOverzichtStr}</span>
+            </div>
+        </div>
+        
+        ${opmerkingen ? `
+        <div class="print-section">
+            <h3>Opmerkingen</h3>
+            <p>${opmerkingen}</p>
+        </div>
+        ` : ''}
+    `;
+    
+    window.print();
+}
+</script>
+</body>
+</html>
